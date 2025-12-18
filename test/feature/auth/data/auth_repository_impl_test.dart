@@ -1,13 +1,13 @@
-import 'package:boilerplate/feature/auth/data/datasource/auth_datasource.dart';
-import 'package:boilerplate/feature/auth/data/models/user_model.dart';
-import 'package:boilerplate/feature/auth/data/repositories/auth_repository_impl.dart';
-import 'package:boilerplate/feature/auth/domain/entities/user.dart';
-import 'package:flutter_test/flutter_test.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+﻿import 'package:flutter_test/flutter_test.dart';
+
+import 'package:boilerplate_getx/feature/auth/data/datasource/auth_datasource.dart';
+import 'package:boilerplate_getx/feature/auth/data/models/user_model.dart';
+import 'package:boilerplate_getx/feature/auth/data/repositories/auth_repository_impl.dart';
+import 'package:boilerplate_getx/feature/auth/domain/entities/user.dart';
 
 
-/// RemoteDataSource Fake: 실제 Dio 호출 대신 고정된 DTO 반환
-class FakeAuthRemoteDataSource implements AuthDataSource {
+/// DataSource Fake: 실제 Dio 호출 대신 고정된 DTO 반환
+class FakeAuthDataSource implements AuthDataSource {
   @override
   Future<UserModel> login({
     required String email,
@@ -23,22 +23,10 @@ class FakeAuthRemoteDataSource implements AuthDataSource {
 
 void main() {
   group('AuthRepositoryImpl', () {
-    late ProviderContainer container;
-
-    setUp(() {
-      container = ProviderContainer(
-        overrides: [
-          // data layer의 authRemoteDataSourceProvider를 Fake로 교체
-          authDataSourceProvider
-              .overrideWithValue(FakeAuthRemoteDataSource()),
-        ],
-      );
-      addTearDown(container.dispose);
-    });
-
-    test('RemoteDataSource의 UserDto를 User 엔티티로 변환한다', () async {
+    test('DataSource의 UserModel을 User 엔티티로 변환한다', () async {
       // given
-      final repo = container.read(authRepositoryProvider);
+      final ds = FakeAuthDataSource();
+      final repo = AuthRepositoryImpl(ds);
 
       // when
       final user = await repo.login(
@@ -48,7 +36,7 @@ void main() {
 
       // then
       expect(user, isA<User>());
-      expect(user.id, '999'); // DTO의 id가 그대로 매핑되었는지
+      expect(user.id, '999');
       expect(user.email, 'test@test.com');
       expect(user.name, 'Remote User');
     });

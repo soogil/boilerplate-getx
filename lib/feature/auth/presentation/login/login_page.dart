@@ -1,19 +1,21 @@
-import 'package:boilerplate/feature/auth/presentation/login/login_state.dart';
-import 'package:boilerplate/feature/auth/presentation/login/login_view_model.dart';
+﻿import 'package:boilerplate_getx/core/di/login_bindings.dart';
+import 'package:boilerplate_getx/feature/auth/presentation/login/login_controller.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:get/get.dart';
 
 
-class LoginPage extends ConsumerStatefulWidget {
+class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
 
   @override
-  ConsumerState<LoginPage> createState() => _LoginPageState();
+  State<StatefulWidget> createState() => _LoginPageState();
 }
 
-class _LoginPageState extends ConsumerState<LoginPage> {
+class _LoginPageState extends State<StatefulWidget>
+    with GetControllerMixin<LoginController> {
   final _emailController = TextEditingController(text: 'test@test.com');
   final _passwordController = TextEditingController(text: '1234');
+
 
   @override
   void dispose() {
@@ -23,8 +25,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
   }
 
   Future<void> _onLoginPressed() async {
-    final vm = ref.read(loginViewModelProvider.notifier);
-    await vm.login(
+    await controller.login(
       email: _emailController.text,
       password: _passwordController.text,
     );
@@ -32,8 +33,6 @@ class _LoginPageState extends ConsumerState<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
-    final state = ref.watch(loginViewModelProvider);
-
     return Scaffold(
       appBar: AppBar(
         title: const Text('Login (Riverpod + MVVM + Freezed)'),
@@ -65,10 +64,10 @@ class _LoginPageState extends ConsumerState<LoginPage> {
             SizedBox(
               width: double.infinity,
               child: ElevatedButton(
-                onPressed: state.status == LoginStatus.loading
+                onPressed: controller.loginStatus == LoginStatus.loading
                     ? null
                     : _onLoginPressed,
-                child: state.status == LoginStatus.loading
+                child: controller.loginStatus == LoginStatus.loading
                     ? const SizedBox(
                   width: 16,
                   height: 16,
@@ -79,24 +78,28 @@ class _LoginPageState extends ConsumerState<LoginPage> {
             ),
 
             const SizedBox(height: 16),
+            Obx(() {
+              if (controller.loginStatus == LoginStatus.failure &&
+                  controller.errorMsg != null) {
+                return Text(
+                  controller.errorMsg!,
+                  style: const TextStyle(color: Colors.red),
+                );
+              }
 
-            // 에러 메시지
-            if (state.status == LoginStatus.failure &&
-                state.errorMessage != null)
-              Text(
-                state.errorMessage!,
-                style: const TextStyle(color: Colors.red),
-              ),
+              if (controller.loginStatus == LoginStatus.success
+              && controller.user != null) {
+                return Padding(
+                  padding: const EdgeInsets.only(top: 16),
+                  child: Text(
+                    'Welcome, ${controller.user!.name} (${controller.user!.email})',
+                    style: const TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                );
+              }
 
-            // 성공 메시지
-            if (state.status == LoginStatus.success && state.user != null)
-              Padding(
-                padding: const EdgeInsets.only(top: 16),
-                child: Text(
-                  'Welcome, ${state.user!.name} (${state.user!.email})',
-                  style: const TextStyle(fontWeight: FontWeight.bold),
-                ),
-              ),
+              return SizedBox();
+            }),
           ],
         ),
       ),

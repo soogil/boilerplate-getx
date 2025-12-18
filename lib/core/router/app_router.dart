@@ -1,26 +1,30 @@
-import 'package:boilerplate/feature/auth/presentation/login/login_page.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+﻿import 'package:boilerplate_getx/core/di/login_bindings.dart';
+import 'package:boilerplate_getx/core/router/app_pages.dart';
+import 'package:boilerplate_getx/feature/auth/presentation/login/login_page.dart';
+import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-part 'app_router.g.dart';
 
-@riverpod
-GoRouter appRouter(Ref ref) {
-  return GoRouter(
-    initialLocation: '/login',
+class AppRouter {
+  static final router = GoRouter(
+    initialLocation: AppPages.home.path,
     routes: [
       GoRoute(
-        path: '/login',
-        name: 'login',
-        builder: (context, state) => const LoginPage(),
-      ),
+        path: AppPages.home.path,
+        pageBuilder: (context, state) {
+          LoginBindings().dependencies();
+          return const MaterialPage(child: LoginPage());
+        }),
       // GoRoute(
       //   path: '/home',
-      //   name: 'home',
-      //   builder: (context, state) => const HomePage(),
+      //   pageBuilder: (context, state) {
+      //     HomeBinding().dependencies();
+      //
+      //     return const MaterialPage(
+      //       child: HomePage(),
+      //     );
+      //   },
       // ),
     ],
-    // 추후 redirect, auth guard 등 추가 가능
   );
 }

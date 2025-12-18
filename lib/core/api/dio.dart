@@ -1,11 +1,8 @@
 import 'package:dio/dio.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-part 'dio.g.dart';
 
-@riverpod
-Dio dioClient(Ref ref) {
+
+Dio dioClient() {
   final dio = Dio(
     BaseOptions(
       baseUrl: 'https://api.example.com', // TODO: 실제 API base URL

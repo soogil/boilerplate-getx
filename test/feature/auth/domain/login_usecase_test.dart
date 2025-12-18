@@ -1,9 +1,8 @@
-import 'package:boilerplate/feature/auth/data/repositories/auth_repository_impl.dart';
-import 'package:boilerplate/feature/auth/domain/entities/user.dart';
-import 'package:boilerplate/feature/auth/domain/repositories/auth_repository.dart';
-import 'package:boilerplate/feature/auth/domain/usecase/login_usecase.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_test/flutter_test.dart';
+﻿import 'package:flutter_test/flutter_test.dart';
+
+import 'package:boilerplate_getx/feature/auth/domain/entities/user.dart';
+import 'package:boilerplate_getx/feature/auth/domain/repositories/auth_repository.dart';
+import 'package:boilerplate_getx/feature/auth/domain/usecase/login_usecase.dart';
 
 
 class FakeAuthRepository implements AuthRepository {
@@ -22,21 +21,10 @@ class FakeAuthRepository implements AuthRepository {
 
 void main() {
   group('LoginUseCase', () {
-    late ProviderContainer container;
-
-    setUp(() {
-      container = ProviderContainer(
-        overrides: [
-          // 도메인 레이어의 authRepositoryProvider를 Fake로 교체
-          authRepositoryProvider.overrideWithValue(FakeAuthRepository()),
-        ],
-      );
-      addTearDown(container.dispose);
-    });
-
     test('이메일/비밀번호로 로그인하면 User를 반환한다', () async {
       // given
-      final useCase = container.read(loginUseCaseProvider);
+      final repo = FakeAuthRepository();
+      final useCase = LoginUseCase(repo);
 
       // when
       final user = await useCase(
@@ -50,8 +38,8 @@ void main() {
       expect(user.name, 'Test User');
     });
 
-    test('이메일이 비어 있으면 예외를 던진다 (비즈니스 검증 예시)', () async {
-      final useCase = container.read(loginUseCaseProvider);
+    test('이메일이 비어 있으면 예외를 던진다(비즈니스 검증 예시)', () async {
+      final useCase = LoginUseCase(FakeAuthRepository());
 
       expect(
             () => useCase(email: '', password: '1234'),

@@ -1,10 +1,6 @@
-import 'package:boilerplate/core/api/dio.dart';
-import 'package:boilerplate/feature/auth/data/models/user_model.dart';
+﻿import 'package:boilerplate_getx/feature/auth/data/models/user_model.dart';
 import 'package:dio/dio.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-part 'auth_datasource.g.dart';
 
 abstract class AuthDataSource {
   Future<UserModel> login({
@@ -35,10 +31,4 @@ class AuthDatasourceImpl implements AuthDataSource {
     final data = response.data as Map<String, dynamic>;
     return UserModel.fromJson(data);
   }
-}
-
-@riverpod
-AuthDataSource authDataSource(Ref ref) {
-  final dio = ref.watch(dioClientProvider);
-  return AuthDatasourceImpl(dio);
 }

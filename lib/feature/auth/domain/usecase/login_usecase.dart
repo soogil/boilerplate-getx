@@ -1,10 +1,6 @@
-import 'package:boilerplate/feature/auth/data/repositories/auth_repository_impl.dart';
-import 'package:boilerplate/feature/auth/domain/entities/user.dart';
-import 'package:boilerplate/feature/auth/domain/repositories/auth_repository.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:riverpod_annotation/riverpod_annotation.dart';
+﻿import 'package:boilerplate_getx/feature/auth/domain/entities/user.dart';
+import 'package:boilerplate_getx/feature/auth/domain/repositories/auth_repository.dart';
 
-part 'login_usecase.g.dart';
 
 // 지금은 전달만 하지만 할일이 많음
 class LoginUseCase {
@@ -38,10 +34,4 @@ class LoginUseCase {
       password: password,
     );
   }
-}
-
-@riverpod
-LoginUseCase loginUseCase(Ref ref) {
-  final repo = ref.watch(authRepositoryProvider);
-  return LoginUseCase(repo);
 }
