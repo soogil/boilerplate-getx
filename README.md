@@ -1,4 +1,4 @@
-# boilerplate-GetX
+# boilerplate-getx
 
 ## 폴더 구조
 
