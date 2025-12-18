@@ -1,4 +1,4 @@
-# boilerplate
+# boilerplate-GetX
 
 ## 폴더 구조
 
@@ -25,7 +25,7 @@
 ```
 ## 기술 스택 & 패턴
 
-- **Riverpod** — 상태관리 / DI
+- **Getx** — 상태관리 / DI
 - **Freezed** — 모델 / 상태 정의
 - **Dio** — REST API 통신
 - **GoRouter** — 라우팅 구조
